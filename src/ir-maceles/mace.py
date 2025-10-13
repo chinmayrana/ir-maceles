@@ -5,7 +5,7 @@ from mace import data
 from mace.tools import torch_geometric, torch_tools, utils
 
 
-class BEC-MACECalculator(Calculator):
+class MACECalculator_BEC(Calculator):
     """MACE ASE Calculator"""
 
     implemented_properties = ["energy", "free_energy", "forces", 'BEC']
