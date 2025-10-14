@@ -25,9 +25,9 @@ def print_energy(a):
 def write_frame(dyn, traj_file):
         dyn.atoms.write(traj_file, append=True)
         
-def run_md(model_path, traj_file, logfile, init_conf, temperature=300, equilibration_steps=5000, time_step=0.25, device='cpu'):
+def run_md(model_path, init_conf, n, traj_file='ir_traj.traj', logfile='ir_md.log', temperature=300, equilibration_steps=5000, time_step=0.25, device='cpu'):
 
-	calculator = MACECalculator_BEC(model_path='/global/home/users/chinmayr/data/SPICE_small.model', device)
+	calculator = MACECalculator_BEC(model_path=model_path, device)
 
 	init_conf.set_calculator(calculator)
 
@@ -50,15 +50,38 @@ def run_md(model_path, traj_file, logfile, init_conf, temperature=300, equilibra
            
 	#Run the MD simulation,
 	nsteps = 200000
+
 	print("Starting simulation (NVT) ...")
+
+	total_dP_list = []
+
 	for step in range(nsteps):
+
     	dyn.run(1)
-    	BEC = init_conf.calc.results.get("BEC")
-    	velocity = torch.tensor(init_conf.get_velocities(), dtype=torch.float32, device=DEVICE)
+
+    	BEC = init_conf.calc.results.get("BEC").to(device).detach()
+    	velocity = torch.tensor(init_conf.get_velocities(), dtype=torch.float32, device=device)
     	dP = torch.bmm(BEC, velocity.unsqueeze(-1)).squeeze(-1)
+
+    	dP_atoms = dP[0:(n-1)]
+    	total_dP = torch.sum(dP_atoms, dim=0)
+    	
+    	total_dP_list.append(total_dP.detach().cpu())
+    	del BEC, velocity, dP, total_dP
+    	torch.cuda.empty_cache()
+    	gc.collect()
     	
 	print("complete.")
 
+	total_dP_stack = np.array(torch.stack(total_dP_list))
+	print('save dict')
+
+	output_dict = {
+    	'total_dp': total_dP_stack
+	}
+
+	with open(f'{traj_file[:-5]}_polarizations.pkl', 'wb') as f:
+    	pickle.dump(output_dict, f)
 
 
 
