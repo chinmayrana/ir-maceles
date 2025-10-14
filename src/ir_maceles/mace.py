@@ -22,7 +22,7 @@ class MACECalculator_BEC(Calculator):
         Calculator.__init__(self, **kwargs)
         self.results = {}
 
-        self.model = torch.load(f=model_path, map_location=device)
+        self.model = torch.load(f=model_path, map_location=device, weights_only=False)
         self.r_max = float(self.model.r_max)
         self.device = torch_tools.init_device(device)
         self.energy_units_to_eV = energy_units_to_eV

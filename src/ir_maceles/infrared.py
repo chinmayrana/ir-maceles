@@ -65,3 +65,12 @@ def IR_plot(total_dP, dt=0.50, dlen=10000, length=800, window_size=30, sigma=3):
 def normalize_area(omega, intensity):
     area = np.trapz(intensity, omega)
     return intensity/area
+
+def pickle_plot(pickle_file, dt=0.50, dlen=10000, length=800, window_size=30, sigma=3):
+    with open(pickle_file, 'rb') as f:
+        bec_dict = picle.load(f)
+        total_dP = bec_dict['total_dP']
+        omega, ft_avg, inten = IR_plot(total_dP, dt, dlen, length, window_size, sigma)
+        normalized_omega, normalized_inten = normalize_area(omega, inten)
+    return normalized_omega, ft_avg, normalized_inten
+       
