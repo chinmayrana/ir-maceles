@@ -1,4 +1,4 @@
- import sys
+import sys
 import os
 import numpy as np
 
@@ -9,7 +9,7 @@ from ase.data import vdw_radii
 def initialize_solvated(INPUT_FILE, water_file='water.pdb'):
     unsolvated = read(INPUT_FILE)
     n_atoms = len(unsolvated)
-
+ 
     output_file = "solvated_config.pdb"
 
     if not os.path.exists(water_file):
