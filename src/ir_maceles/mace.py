@@ -1,8 +1,10 @@
 import torch
 from ase.calculators.calculator import Calculator, all_changes
 
+import mace
 from mace import data
 from mace.tools import torch_geometric, torch_tools, utils
+import les
 
 
 class MACECalculator_BEC(Calculator):
