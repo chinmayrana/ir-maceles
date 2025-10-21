@@ -25,12 +25,13 @@ def print_energy(a):
 def write_frame(dyn, traj_file):
 		dyn.atoms.write(traj_file, append=True)
 
-def run_md(model_path, input_file, n_atoms, n_steps, traj_file='ir_traj.traj', logfile='ir_md.log', temperature=300, equilibration_steps=5000, time_step=0.25, device='cpu'):
+def run_md(model_path, input_file, n_atoms, n_steps, traj_file='ir_traj.traj', logfile='ir_md.log', temperature=300, equilibration_steps=5000, timestep=0.25, device='cpu'):
 
 	init_conf = read(input_file)
 	calculator = MACECalculator_BEC(model_path, device)
 
-	init_conf.set_calculator(calculator)
+	init_conf.calc = calculator
+	print('Cell:', init_conf.cell)
 
 	from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 

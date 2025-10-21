@@ -9,11 +9,11 @@ from ase.io import read, write
 from ase.data import vdw_radii
 from ase.build import molecule
  
-def initialize_solvated(INPUT_FILE, water_file='water.pdb'):
+def initialize_solvated(INPUT_FILE, water_file='water.xyz'):
     unsolvated = read(INPUT_FILE)
     n_atoms = len(unsolvated)
- 
-    output_file = "solvated_config.pdb"
+    
+    packmol_file = "packmol.xyz"
 
     if not os.path.exists(water_file):
         h2o = molecule("H2O")
@@ -21,10 +21,17 @@ def initialize_solvated(INPUT_FILE, water_file='water.pdb'):
 
     n_water = 150
     box_size = box_sizer(n_water, unsolvated)
-    packmol_input(output_file, INPUT_FILE, water_file, n_water, box_size)
+    packmol_input(packmol_file, INPUT_FILE, water_file, n_water, box_size)
     # Run Packmol (assumes `packmol` in PATH)
     with open("packmol.inp") as f:
         subprocess.run(f"packmol < packmol.inp", shell=True, check=True)
+
+    solvated = read(packmol_file)
+    
+    solvated.set_cell([[box_size,0,0],[0,box_size,0],[0,0,box_size]])
+    solvated.set_pbc([True, True, True])
+    output_file = 'output.extxyz'
+    write(output_file, solvated)  
     return output_file
     
 def solute_volume(atoms):
@@ -43,7 +50,7 @@ def box_sizer(n_water, solute_atoms, density=1.0):
 def packmol_input(output_file, solute_file, water_file, n_water, box_size):
     half_box = box_size / 2
     packmol_input = """tolerance 2.0
-    filetype pdb
+    filetype xyz
     output {output}
     
     structure {solute}

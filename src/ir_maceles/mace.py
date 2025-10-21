@@ -18,7 +18,7 @@ class MACECalculator_BEC(Calculator):
         device: str,
         energy_units_to_eV: float = 1.0,
         length_units_to_A: float = 1.0,
-        default_dtype="float64",
+        default_dtype="float32",
         **kwargs
     ):
         Calculator.__init__(self, **kwargs)
