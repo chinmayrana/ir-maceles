@@ -13,6 +13,7 @@ from ase import units
 from ase.md.langevin import Langevin
 from ase.md.npt import NPT
 from ase.md.nptberendsen import NPTBerendsen
+from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import MDLogger
 from ase.io import read, write
 
