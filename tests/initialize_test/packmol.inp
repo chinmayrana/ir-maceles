@@ -1,0 +1,15 @@
+tolerance 2.0
+    filetype xyz
+    output packmol.xyz
+    
+    structure alanine-dipeptide-nowater-1.xyz
+      number 1
+      center
+      fixed 0. 0. 0. 0. 0. 0.
+    end structure
+    
+    structure water.xyz
+      number 150
+      inside box -8.410 -8.410 -8.410 8.410 8.410 8.410
+    end structure
+    
