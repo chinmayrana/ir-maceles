@@ -60,7 +60,7 @@ class MACECalculator_BEC(Calculator):
             drop_last=False,
         )
         batch = next(iter(data_loader)).to(self.device)
-
+        self.model.to(self.device)
         # predict + extract data
         out = self.model(batch.to_dict(), compute_bec= True)
         energy = out["energy"].detach().cpu().item()

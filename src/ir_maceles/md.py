@@ -16,6 +16,8 @@ from ase.md.nptberendsen import NPTBerendsen
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import MDLogger
 from ase.io import read, write
+from ase.io.trajectory import Trajectory
+
 
 def print_energy(a):
     """Function to print the potential, kinetic and total energy."""
@@ -66,8 +68,9 @@ class MD:
 
 
         # Attach logger
-        
-        dyn.attach(write_frame(dyn, traj_file), interval=1)
+
+        traj = Trajectory(traj_file, 'w', init_conf)
+        dyn.attach(traj.write, interval=1)
 
         dyn.attach(
             MDLogger(dyn, init_conf, self.logfile, header=True, stress=True, peratom=False, mode="w"),
