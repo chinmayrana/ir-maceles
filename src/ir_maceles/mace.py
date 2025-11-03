@@ -1,5 +1,7 @@
 import torch
 from ase.calculators.calculator import Calculator, all_changes
+from ase.stress import full_3x3_to_voigt_6_stress
+
 
 import mace
 from mace import data
@@ -10,7 +12,7 @@ import les
 class MACECalculator_BEC(Calculator):
     """MACE ASE Calculator"""
 
-    implemented_properties = ["energy", "free_energy", "forces", 'BEC']
+    implemented_properties = ["energy", "free_energy", "forces",'stress', 'BEC']
 
     def __init__(
         self,
@@ -78,3 +80,12 @@ class MACECalculator_BEC(Calculator):
         if out.get("BEC") is not None:
             bec = out["BEC"].detach().cpu().numpy()
             self.results["BEC"] = bec
+
+        if out["stress"] is not None:
+            stress = out["stress"].detach().cpu().numpy()
+            # stress has units eng / len^3:
+            self.results["stress"] = (
+                stress * (self.energy_units_to_eV / self.length_units_to_A**3)
+            )[0]
+            self.results["stress"] = full_3x3_to_voigt_6_stress(self.results["stress"])
+
