@@ -69,7 +69,7 @@ class MD:
 
         # Attach logger
 
-        traj = Trajectory(traj_file, 'w', init_conf)
+        traj = Trajectory(self.traj_file, 'w', init_conf)
         dyn.attach(traj.write, interval=1)
 
         dyn.attach(
