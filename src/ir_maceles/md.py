@@ -82,7 +82,7 @@ class MD:
 
         for step in range(self.n_steps):
             dyn.run(1)
-            BEC = init_conf.calc.results.get("BEC").to(self.device).detach()
+            BEC = torch.tensor(init_conf.calc.results.get("BEC"), dtype=torch.float32, device=self.device)
             velocity = torch.tensor(init_conf.get_velocities(), dtype=torch.float32, device=self.device)
             dP = torch.bmm(BEC, velocity.unsqueeze(-1)).squeeze(-1)
             dP_atoms = dP[0:self.n_atoms]
