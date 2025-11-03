@@ -64,7 +64,7 @@ class MACECalculator_BEC(Calculator):
         batch = next(iter(data_loader)).to(self.device)
         self.model.to(self.device)
         # predict + extract data
-        out = self.model(batch.to_dict(), compute_bec= True)
+        out = self.model(batch.to_dict(), compute_bec= True, compute_stress=True)
         energy = out["energy"].detach().cpu().item()
         forces = out["forces"].detach().cpu().numpy()
 
@@ -81,7 +81,7 @@ class MACECalculator_BEC(Calculator):
             bec = out["BEC"].detach().cpu().numpy()
             self.results["BEC"] = bec
 
-        if out["stress"] is not None:
+        if out.get("stress") is not None:
             stress = out["stress"].detach().cpu().numpy()
             # stress has units eng / len^3:
             self.results["stress"] = (
