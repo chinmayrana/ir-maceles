@@ -64,6 +64,11 @@ class MD:
         )
 
         # Equilibration run
+        dyn.attach(
+            MDLogger(dyn, init_conf, self.logfile, header=True, stress=True, peratom=False, mode="w"),
+            interval=100,
+        )
+        
         dyn.run(self.equilibration_steps)
 
 
@@ -72,10 +77,6 @@ class MD:
         traj = Trajectory(self.traj_file, 'w', init_conf)
         dyn.attach(traj.write, interval=1)
 
-        dyn.attach(
-            MDLogger(dyn, init_conf, self.logfile, header=True, stress=True, peratom=False, mode="w"),
-            interval=100,
-        )
 
         print("Starting simulation (NVT) ...")
         total_dP_list = []
