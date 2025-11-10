@@ -48,7 +48,7 @@ def box_sizer(n_water, solute_atoms, density=1.0):
     return V_box ** (1/3)
     
 def packmol_input(output_file, solute_file, water_file, n_water, box_size):
-    half_box = box_size / 2 - 2
+    half_box = box_size / 2 - 1
     packmol_input = """tolerance 2.0
     filetype xyz
     output {output}
