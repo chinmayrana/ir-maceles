@@ -23,13 +23,13 @@ def initialize_solvated(INPUT_FILE, water_file='water.xyz'):
     box_size = box_sizer(n_water, unsolvated)
     packmol_input(packmol_file, INPUT_FILE, water_file, n_water, box_size)
     # Run Packmol (assumes `packmol` in PATH)
-    with open("packmol.inp") as f:
-        subprocess.run(f"packmol < packmol.inp", shell=True, check=True)
+    subprocess.run(f"packmol < packmol.inp", shell=True, check=True)
 
     solvated = read(packmol_file)
     
     solvated.set_cell([[box_size,0,0],[0,box_size,0],[0,0,box_size]])
     solvated.set_pbc([True, True, True])
+    
     output_file = 'output.extxyz'
     write(output_file, solvated)  
     return output_file
