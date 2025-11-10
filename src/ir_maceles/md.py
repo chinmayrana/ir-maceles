@@ -17,6 +17,7 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import MDLogger
 from ase.io import read, write
 from ase.io.trajectory import Trajectory
+from ase.optimize import BFGS
 
 
 def print_energy(a):
@@ -45,9 +46,12 @@ class MD:
         init_conf = read(self.input_file)
         calculator = MACECalculator_BEC(self.model_path, self.device)
         init_conf.calc = calculator
-
+        
         print("Cell:", init_conf.cell)
-
+        
+        opt = BFGS(init_conf)
+        opt.run(fmax=0.05)
+        
         # Set initial velocities
         MaxwellBoltzmannDistribution(init_conf, temperature_K = self.temperature)
 
@@ -62,21 +66,16 @@ class MD:
             pfactor=None,
             externalstress=0.0,
         )
-
-        # Equilibration run
+        # Attach logger
         dyn.attach(
             MDLogger(dyn, init_conf, self.logfile, header=True, stress=True, peratom=False, mode="w"),
-            interval=100,
+            interval=1,
         )
-        
+        # Equilibration run
         dyn.run(self.equilibration_steps)
-
-
-        # Attach logger
 
         traj = Trajectory(self.traj_file, 'w', init_conf)
         dyn.attach(traj.write, interval=1)
-
 
         print("Starting simulation (NVT) ...")
         total_dP_list = []
