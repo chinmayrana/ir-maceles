@@ -69,7 +69,7 @@ class MD:
         # Attach logger
         dyn.attach(
             MDLogger(dyn, init_conf, self.logfile, header=True, stress=True, peratom=False, mode="w"),
-            interval=1,
+            interval=100,
         )
         # Equilibration run
         dyn.run(self.equilibration_steps)
@@ -88,7 +88,12 @@ class MD:
             dP_atoms = dP[0:self.n_atoms]
             total_dP = torch.sum(dP_atoms, dim=0)
             total_dP_list.append(total_dP.detach().cpu())
-
+            if (step + 1) % 50000 == 0:
+                partial_output = torch.stack(total_dP_list).numpy()
+                output_dict = {"total_dp": partial_output}
+                with open(output_path.replace(".pkl", f"_{step+1}.pkl"), "wb") as f:
+                    pickle.dump(output_dict, f)
+                print(f"Checkpoint saved: {output_path.replace('.pkl', f'_up_to_{step+1}.pkl')}")
             del BEC, velocity, dP, total_dP
             torch.cuda.empty_cache()
             gc.collect()
