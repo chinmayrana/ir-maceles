@@ -29,5 +29,3 @@ pickle_file = ir_md.run_md()
 
 omega, ft_avg, inten = pickle_plot(pickle_file, dt=0.25, dlen=10000, length=8000, window_size=2, sigma=5)
 
-plt.plot(omega, inten)
-plt.savefig('testfig.png')
