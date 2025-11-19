@@ -79,6 +79,7 @@ class MD:
 
         print("Starting simulation (NVT) ...")
         total_dP_list = []
+        output_path = os.path.splitext(self.traj_file)[0] + "_polarizations.pkl"
 
         for step in range(self.n_steps):
             dyn.run(1)
@@ -103,7 +104,6 @@ class MD:
 
         output_dict = {"total_dp": total_dP_stack}
 
-        output_path = os.path.splitext(self.traj_file)[0] + "_polarizations.pkl"
         with open(output_path, "wb") as f:
             pickle.dump(output_dict, f)
 

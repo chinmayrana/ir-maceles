@@ -58,7 +58,7 @@ class MACECalculator_BEC(Calculator):
                 )
             ],
             batch_size=1,
-            shuffle=False,  
+            shuffle=False,
             drop_last=False,
         )
         batch = next(iter(data_loader)).to(self.device)

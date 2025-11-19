@@ -72,5 +72,15 @@ def pickle_plot(pickle_file, dt=0.50, dlen=10000, length=800, window_size=30, si
         total_dP = bec_dict['total_dp']
         omega, ft_avg, inten = IR_plot(total_dP, dt, dlen, length, window_size, sigma)
         normalized_inten = normalize_area(omega, inten)
+
+        plt.figure(figsize=(15, 9), dpi=150)
+        plt.xlabel("Wavenumber (cm$^{-1}$)", fontsize = 25)
+        plt.ylabel("Intensity (a.u.)", fontsize=25)
+        plt.xticks(fontsize=15)
+        plt.yticks([])
+        plt.xlim(0, 4000)
+        plt.ylim(0, None)
+        plt.plot(omega, normalized_inten)
+        plt.savefig(f"{pickle_file}_spectra.png")
     return omega, ft_avg, normalized_inten
        
